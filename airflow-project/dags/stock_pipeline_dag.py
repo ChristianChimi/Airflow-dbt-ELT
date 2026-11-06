@@ -17,11 +17,11 @@ def fetch_and_load_data():
     db_url = 'postgresql+psycopg2://airflow:airflow@postgres:5432/airflow'
     engine = create_engine(db_url)
     
-    # 1. Assicuriamoci che lo schema bronze e la tabella esistano per evitare errori al primo avvio
+    # 1. Assicuriamoci che lo schema public_bronze e la tabella esistano
     with engine.begin() as conn:
-        conn.execute(text("CREATE SCHEMA IF NOT EXISTS bronze;"))
+        conn.execute(text("CREATE SCHEMA IF NOT EXISTS public_bronze;"))
         conn.execute(text("""
-            CREATE TABLE IF NOT EXISTS bronze.raw_stock_prices (
+            CREATE TABLE IF NOT EXISTS public_bronze.raw_stock_prices (
                 ticker VARCHAR(10),
                 date DATE,
                 open NUMERIC,
@@ -37,8 +37,8 @@ def fetch_and_load_data():
     
     for ticker in tickers:
         try:
-            # Leggiamo dal layer BRONZE
-            existing_df = pd.read_sql(f"SELECT DISTINCT date FROM bronze.raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
+            # Leggiamo dal layer PUBLIC_BRONZE
+            existing_df = pd.read_sql(f"SELECT DISTINCT date FROM public_bronze.raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
             existing_dates = set(pd.to_datetime(existing_df['date']).dt.date)
             max_date = max(existing_dates) if existing_dates else None
         except SQLAlchemyError:
@@ -77,9 +77,9 @@ def fetch_and_load_data():
 
     final_df = pd.concat(all_data, ignore_index=True)
     
-    # 2. Scriviamo esplicitamente nello schema BRONZE
-    final_df.to_sql('raw_stock_prices', con=engine, schema='bronze', if_exists='append', index=False, chunksize=1000)
-    print(f'Loading completed: added {len(final_df)} new rows to bronze layer.')
+    # 2. Scriviamo esplicitamente nello schema PUBLIC_BRONZE
+    final_df.to_sql('raw_stock_prices', con=engine, schema='public_bronze', if_exists='append', index=False, chunksize=1000)
+    print(f'Loading completed: added {len(final_df)} new rows to public_bronze layer.')
 
 
 default_args = {

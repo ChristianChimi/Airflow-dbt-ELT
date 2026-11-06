@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: bronze
     database: airflow
-    schema: bronze
+    schema: public_bronze
     tables:
       - name: raw_stock_prices
       - name: raw_stocks
