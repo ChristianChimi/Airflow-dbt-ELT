@@ -22,7 +22,7 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 * **Transformation (`BashOperator` running `dbt build`):**
   * Automatically triggered upon successful ingestion.
   * Runs dbt seeds, staging transformations, and analytical marts incrementally to keep data models up to date.
----
+----
 
 ## 📂 Project Structure
 
