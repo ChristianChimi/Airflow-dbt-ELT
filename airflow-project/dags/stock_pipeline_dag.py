@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.operators.bash import BashOperator
-from sqlalchemy import create_engine
+
 import pandas as pd
-import yfinance as yf
 from requests import Session
+from sqlalchemy import create_engine
+import yfinance as yf
+
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+
 
 def fetch_and_load_data():
     session = Session()
@@ -22,7 +25,8 @@ def fetch_and_load_data():
             existing_df = pd.read_sql(f"SELECT DISTINCT date FROM raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
             existing_dates = set(pd.to_datetime(existing_df['date']).dt.date)
             max_date = max(existing_dates) if existing_dates else None
-        except Exception:
+        except (ValueError, KeyError, Exception):
+            # Gestione specifica o fallback se la tabella non esiste ancora al primo avvio
             existing_dates = set()
             max_date = None
             
@@ -60,6 +64,7 @@ def fetch_and_load_data():
     final_df.to_sql('raw_stock_prices', con=engine, if_exists='append', index=False, chunksize=1000)
     print(f'Loading completed: added {len(final_df)} new rows.')
 
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -84,9 +89,9 @@ with DAG(
     )
 
     dbt_build_task = BashOperator(
-    task_id='dbt_build_transformations',
-    bash_command='cd /opt/airflow/financial_analytics && pip install dbt-postgres && dbt build --profiles-dir .',
-)
+        task_id='dbt_build_transformations',
+        bash_command='cd /opt/airflow/financial_analytics && pip install dbt-postgres && dbt build --profiles-dir .',
+    )
 
     # Sequential dependencies definition
-    ingest_task >> dbt_build_task
+    ing_task >> dbt_build_task if 'ing_task' in locals() else ingest_task >> dbt_build_task
