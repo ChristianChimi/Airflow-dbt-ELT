@@ -12,7 +12,7 @@ select
     p.ticker,
     s.company_name,
     s.sector,
-    p.date,
+    p.price_date as date,
     p.open_price,
     p.high_price,
     p.low_price,

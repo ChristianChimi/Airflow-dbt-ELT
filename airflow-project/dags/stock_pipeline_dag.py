@@ -7,6 +7,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from requests import Session
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def fetch_and_load_data():
@@ -40,7 +41,7 @@ def fetch_and_load_data():
             existing_df = pd.read_sql(f"SELECT DISTINCT date FROM bronze.raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
             existing_dates = set(pd.to_datetime(existing_df['date']).dt.date)
             max_date = max(existing_dates) if existing_dates else None
-        except Exception:
+        except SQLAlchemyError:
             existing_dates = set()
             max_date = None
             
