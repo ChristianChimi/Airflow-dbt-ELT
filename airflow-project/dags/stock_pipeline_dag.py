@@ -5,9 +5,9 @@ from airflow.operators.bash import BashOperator
 from sqlalchemy import create_engine
 import pandas as pd
 import yfinance as yf
-from requests impoAAAAAAAAArt Session
+from requests import Session
 
-def fetch_aAAAAAAAAnd_load_data():
+def fetch_and_load_data():
     session = Session()
     session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
 
@@ -21,7 +21,7 @@ def fetch_aAAAAAAAAnd_load_data():
         try:
             existing_df = pd.read_sql(f"SELECT DISTINCT date FROM raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
             existing_dates = set(pd.to_datetime(existing_df['date']).dt.date)
-            max_date = max(exisAAAAAAAAAAAAAAAting_dates) if existing_dates else None
+            max_date = max(existing_dates) if existing_dates else None
         except Exception:
             existing_dates = set()
             max_date = None
