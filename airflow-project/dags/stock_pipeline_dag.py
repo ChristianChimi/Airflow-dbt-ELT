@@ -7,14 +7,14 @@ import pandas as pd
 import yfinance as yf
 from requests import Session
 
-def fetch_and_load_data():aaaaaaaaaaaaaaaaaaaaaaaaaaa
+def fetch_and_load_data():
     session = Session()
     session.headers['User-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
 
     db_url = 'postgresql+psycopg2://airflow:airflow@postgres:5432/airflow'
     engine = create_engine(db_url)
     
-    tickers = ['AAPaaaaaaaaaaaaaaaaaaaaaaaL', 'MSFT', 'TSLA', 'GOOGL', 'AMZN']
+    tickers = ['AAPL', 'MSFT', 'TSLA', 'GOOGL', 'AMZN']
     all_data = []
     
     for ticker in tickers:
@@ -22,7 +22,7 @@ def fetch_and_load_data():aaaaaaaaaaaaaaaaaaaaaaaaaaa
             existing_df = pd.read_sql(f"SELECT DISTINCT date FROM raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
             existing_dates = set(pd.to_datetime(existing_df['date']).dt.date)
             max_date = max(existing_dates) if existing_dates else None
-        except Exception:aaaaaaaaaaaaaaaaaaaaaaaaa
+        except Exception:
             existing_dates = set()
             max_date = None
             
