@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: bronze_layer
+  - name: bronze
     database: airflow
     schema: bronze
     tables:
