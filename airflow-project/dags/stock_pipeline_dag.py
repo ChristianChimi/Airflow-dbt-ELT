@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-from requests import Session
-from sqlalchemy import create_engine
 import yfinance as yf
-
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
+from requests import Session
+from sqlalchemy import create_engine
 
 
 def fetch_and_load_data():
