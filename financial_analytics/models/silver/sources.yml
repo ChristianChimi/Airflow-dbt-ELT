@@ -1,9 +1,9 @@
 version: 2
 
 sources:
-  - name: public
+  - name: bronze_layer
     database: airflow
-    schema: public
+    schema: bronze
     tables:
       - name: raw_stock_prices
       - name: raw_stocks

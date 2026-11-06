@@ -7,5 +7,5 @@ select
     low as low_price,
     close as close_price,
     volume,
-    date
-from {{ source('public', 'raw_stock_prices') }}
+    date::date as price_date 
+from {{ source('bronze', 'raw_stock_prices') }}
