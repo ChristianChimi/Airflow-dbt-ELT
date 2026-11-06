@@ -30,9 +30,15 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 
 Airflow-dbt-ELT/
 │
+├── .github/
+│   └── workflows/
+│       └── data_platform_ci.yml   # <-- La pipeline di GitHub Actions
+│
 ├── airflow-project/          # Airflow configuration and DAGs
-│   └── dags/
-│       └── stock_market_elt_pipeline.py
+│   ├── dags/
+│   │   └── stock_market_elt_pipeline.py
+│   └── tests/
+│       └── test_dag_integrity.py  # <-- Unit test automatico per i DAG
 │
 ├── financial-analytics/      # dbt project root
 │   ├── models/
