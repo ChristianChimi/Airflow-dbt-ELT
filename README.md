@@ -32,7 +32,7 @@ Airflow-dbt-ELT/
 │
 ├── .github/
 │   └── workflows/
-│       └── data_platform_ci.yml   # <-- La pipeline di GitHub Actions
+│       └── data_platform_ci.yml  # CI/CD
 │
 ├── airflow-project/          # Airflow configuration and DAGs
 │   ├── dags/
