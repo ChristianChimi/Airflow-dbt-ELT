@@ -1,5 +1,8 @@
-
+# Airflow logs & targets
+logs/
+airflow/logs/
 target/
 dbt_packages/
-logs/
-.env
+*.log
+.venv/
+__pycache__/
