@@ -1,5 +1,4 @@
 from airflow.models import DagBag
-import pytest
 
 
 def test_no_import_errors():
