@@ -6,23 +6,30 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 
 ## Architecture & Tech Stack
 
-* **Orchestration:** Apache Airflow (DAGs configured with sequential task dependencies and concurrency controls).
-* **Ingestion:** Python (using `yfinance` to fetch live historical stock data) with incremental append logic.
-* **Transformation & Modeling:** dbt-postgres (Staging, Marts, and incremental model builds).
-* **Database:** PostgreSQL.
-* **Environment:** Docker & Docker Compose.
+- **Orchestration:** Apache Airflow (DAGs configured with sequential task dependencies and concurrency controls).
+- **Ingestion:** Python (using `yfinance` to fetch live historical stock data) with incremental append logic.
+- **Transformation & Modeling:** dbt-postgres (Staging, Marts, and incremental model builds).
+- **CI/CD Automation:** GitHub Actions (Automated testing, linter validation, and dbt parsing).
+- **Database:** PostgreSQL.
+- **Environment:** Docker & Docker Compose.
 
 ## Pipeline Workflow
 
-* **Extraction & Incremental Load (`PythonOperator`):**
+- **Extraction & Incremental Load (`PythonOperator`):**
   * Queries the PostgreSQL database to check the latest available date (`max(date)`) for each stock ticker (`AAPL`, `MSFT`, `TSLA`, `GOOGL`, `AMZN`).
   * Fetches only missing or new daily records from Yahoo Finance via `yfinance`.
   * Appends the new rows idempotently to the `raw_stock_prices` table to avoid duplicates.
 
-* **Transformation (`BashOperator` running `dbt build`):**
+- **Transformation (`BashOperator` running `dbt build`):**
   * Automatically triggered upon successful ingestion.
   * Runs dbt seeds, staging transformations, and analytical marts incrementally to keep data models up to date.
-----
+
+## CI/CD Quality Controls (GitHub Actions)
+
+To ensure high code quality and prevent runtime failures, the repository features an automated CI/CD pipeline running on every push and pull request, executing:
+- **Ruff:** Code style, formatting, and linter checks.
+- **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` to validate syntax and structure.
+- **dbt Parse:** Compilation and dependency checks across all dbt models and schemas.
 
 ## 📂 Project Structure
 
