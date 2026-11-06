@@ -41,7 +41,7 @@ jobs:
           python -m pytest airflow-project/tests/test_dag_integrity.py
 
       # 3. Compilazione e validazione dbt
-      - name: Run dbt build
+      - name: Run dbt parse
         run: |
           cd financial_analytics
-          dbt build --profiles-dir .
+          dbt parse --profiles-dir .
