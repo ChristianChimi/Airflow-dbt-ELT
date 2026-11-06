@@ -25,7 +25,7 @@ def fetch_and_load_data():
             existing_df = pd.read_sql(f"SELECT DISTINCT date FROM raw_stock_prices WHERE ticker = '{ticker}'", con=engine)
             existing_dates = set(pd.to_datetime(existing_df['date']).dt.date)
             max_date = max(existing_dates) if existing_dates else None
-        except (ValueError, KeyError, Exception):
+        except (ValueError, KeyError):
             # Gestione specifica o fallback se la tabella non esiste ancora al primo avvio
             existing_dates = set()
             max_date = None
@@ -94,4 +94,4 @@ with DAG(
     )
 
     # Sequential dependencies definition
-    ing_task >> dbt_build_task if 'ing_task' in locals() else ingest_task >> dbt_build_task
+    ingest_task >> dbt_build_task
