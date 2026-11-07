@@ -9,6 +9,7 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 - **Orchestration:** Apache Airflow (DAGs configured with sequential task dependencies and concurrency controls).
 - **Ingestion:** Python (using `yfinance` to fetch live historical stock data) with incremental append logic.
 - **Transformation & Modeling:** dbt-postgres (Staging, Marts, and incremental model builds).
+- **Code Quality & Git Hygiene:** `pre-commit` hooks running **Ruff** (linting and formatting) and file hygiene checks locally before every commit.
 - **CI/CD Automation:** GitHub Actions (Automated testing, linter validation, and dbt parsing).
 - **Database:** PostgreSQL.
 - **Environment:** Docker & Docker Compose.
@@ -23,6 +24,13 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 - **Transformation (`BashOperator` running `dbt build`):**
   * Automatically triggered upon successful ingestion.
   * Runs dbt seeds, staging transformations, and analytical marts incrementally to keep data models up to date.
+
+## Local Quality Controls & Pre-commit Hooks
+
+To maintain high code standards and catch formatting issues before code is even committed, the repository is integrated with **`pre-commit`**:
+- **Ruff & Ruff-format:** Instant Python linting, style enforcement, and automatic code formatting.
+- **Whitespace & YAML Checks:** Automatic removal of trailing whitespaces, correct end-of-file formatting, and YAML syntax validation.
+- **Large File Protection:** Prevents accidental commits of heavy datasets or files exceeding 500 KB.
 
 ## CI/CD Quality Controls (GitHub Actions)
 
@@ -39,13 +47,13 @@ Airflow-dbt-ELT/
 │
 ├── .github/
 │   └── workflows/
-│       └── data_platform_ci.yml  # CI/CD
+│       └── data_platform_ci.yml  # CI/CD pipeline
 │
 ├── airflow-project/          # Airflow configuration and DAGs
 │   ├── dags/
 │   │   └── stock_market_elt_pipeline.py
 │   └── tests/
-│       └── test_dag_integrity.py  # <-- Unit test automatico per i DAG
+│       └── test_dag_integrity.py  # Unit test automatico per i DAG
 │
 ├── financial-analytics/      # dbt project root
 │   ├── models/
@@ -55,5 +63,5 @@ Airflow-dbt-ELT/
 │   ├── dbt_project.yml       # dbt project configuration
 │   └── profiles.yml          # Database connection profiles
 │
+├── .pre-commit-config.yaml   # Local git hooks configuration (Ruff & hygiene)
 └── docker-compose.yml        # Infrastructure setup (Airflow + Postgres)
-
