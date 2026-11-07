@@ -57,8 +57,8 @@ Airflow-dbt-ELT/
 │
 ├── financial-analytics/      # dbt project root
 │   ├── models/
-│   │   ├── staging/          # Staging models (cleaning raw data)
-│   │   └── marts/            # Business-ready models and aggregations
+│   │   ├── silver/           # Silver models (cleaned and standardized data)
+│   │   └── gold/             # Gold models (business-ready aggregations and marts)
 │   ├── seeds/                # Static reference data (e.g., stocks.csv)
 │   ├── dbt_project.yml       # dbt project configuration
 │   └── profiles.yml          # Database connection profiles
