@@ -40,7 +40,7 @@ def get_robust_data(ticker, period="3y"):
 
         return df[["unique_id", "ds", "y", "volume", "sp500", "vix", "vol_ma"]]
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         st.error(f"Errore di connessione o query al DB: {e}")
         return None
 

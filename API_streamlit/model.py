@@ -1,8 +1,8 @@
-import torch
 import pandas as pd
 from neuralforecast import NeuralForecast
-from neuralforecast.models import NHITS
 from neuralforecast.losses.pytorch import QuantileLoss
+from neuralforecast.models import NHITS
+import torch
 
 
 class RobustForecastModel:
@@ -11,7 +11,6 @@ class RobustForecastModel:
         self.futr_exog = ["sp500", "vix", "volume", "vol_ma"]
         quantiles_tensor = torch.tensor([0.1, 0.5, 0.9])
 
-        # Disabilitiamo la progress bar grafica per evitare conflitti con Streamlit
         trainer_kw = {"enable_progress_bar": False}
 
         self.model = NHITS(
@@ -65,8 +64,6 @@ class RobustForecastModel:
         correct_futr_bt = self._prepare_and_clean_future(train_df, df_clean)
 
         backtest_forecast = self.nf.predict(futr_df=correct_futr_bt)
-
-        # Tagliamo la predizione esattamente sugli ultimi 'self.horizon' passi per allinearla a test_df
         backtest_forecast = backtest_forecast.tail(self.horizon)
 
         return backtest_forecast.reset_index(), test_df
