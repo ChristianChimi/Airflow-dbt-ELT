@@ -54,6 +54,8 @@ Airflow-dbt-ELT/
 │   │   └── stock_market_elt_pipeline.py
 │   └── tests/
 │       └── test_dag_integrity.py  # Automatic DAG integrity unit tests
+└── docker-compose.yml        # Infrastructure setup (Airflow + Postgres)
+|
 │
 ├── financial-analytics/      # dbt project root
 │   ├── models/
@@ -64,4 +66,3 @@ Airflow-dbt-ELT/
 │   └── profiles.yml          # Database connection profiles
 │
 ├── .pre-commit-config.yaml   # Local git hooks configuration (Ruff & hygiene)
-└── docker-compose.yml        # Infrastructure setup (Airflow + Postgres)
