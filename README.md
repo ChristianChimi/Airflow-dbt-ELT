@@ -53,7 +53,7 @@ Airflow-dbt-ELT/
 │   ├── dags/
 │   │   └── stock_market_elt_pipeline.py
 │   └── tests/
-│       └── test_dag_integrity.py  # Unit test automatico per i DAG
+│       └── test_dag_integrity.py  # Automatic DAG integrity unit tests
 │
 ├── financial-analytics/      # dbt project root
 │   ├── models/
