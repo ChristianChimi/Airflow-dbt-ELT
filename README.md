@@ -8,9 +8,11 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 
 - **Orchestration:** Apache Airflow (DAGs configured with sequential task dependencies and concurrency controls).
 - **Ingestion:** Python (using `yfinance` to fetch live historical stock data) with incremental append logic.
-- **Transformation & Modeling:** dbt-postgres (Staging, Marts, and incremental model builds).
+- **Transformation & Modeling:** dbt-postgres (Staging, Silver, and Gold incremental model builds).
 - **Code Quality & Git Hygiene:** `pre-commit` hooks running **Ruff** (linting and formatting) and file hygiene checks locally before every commit.
-- **CI/CD Automation:** GitHub Actions (Automated testing, linter validation, and dbt parsing).
+- **CI/CD Automation:** GitHub Actions:
+  - **CI:** Automated Ruff linting, Pytest DAG integrity checks (`DagBag` with `include_examples=False`), and dbt parsing.
+  - **CD:** Automated Docker image builds via Docker Buildx and publishing to **GitHub Container Registry (GHCR)**.
 - **Database:** PostgreSQL.
 - **Environment:** Docker & Docker Compose.
 
@@ -23,7 +25,7 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 
 - **Transformation (`BashOperator` running `dbt build`):**
   * Automatically triggered upon successful ingestion.
-  * Runs dbt seeds, staging transformations, and analytical marts incrementally to keep data models up to date.
+  * Runs dbt seeds, transformations, and analytical marts incrementally to keep data models up to date.
 
 ## Local Quality Controls & Pre-commit Hooks
 
@@ -36,33 +38,34 @@ To maintain high code standards and catch formatting issues before code is even 
 
 To ensure high code quality and prevent runtime failures, the repository features an automated CI/CD pipeline running on every push and pull request, executing:
 - **Ruff:** Code style, formatting, and linter checks.
-- **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` to validate syntax and structure.
+- **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` (isolating custom DAGs with `include_examples=False`) after running `airflow db migrate`.
 - **dbt Parse:** Compilation and dependency checks across all dbt models and schemas.
 
 ## 📂 Project Structure
 
 ```text
-
 Airflow-dbt-ELT/
 │
 ├── .github/
 │   └── workflows/
-│       └── data_platform_ci.yml  # CI/CD pipeline
+│       ├── data_platform_ci.yml    # CI pipeline (Lint, Pytest, dbt parse)
+│       └── data_platform_cd.yml    # CD pipeline (Docker Build & Push to GHCR)
 │
-├── airflow-project/          # Airflow configuration and DAGs
+├── airflow-project/                # Airflow configuration and DAGs
 │   ├── dags/
 │   │   └── stock_market_elt_pipeline.py
-│   └── tests/
-│       └── test_dag_integrity.py  # Automatic DAG integrity unit tests
-└── docker-compose.yml        # Infrastructure setup (Airflow + Postgres)
-|
+│   ├── tests/
+│   │   └── test_dag_integrity.py   # Automatic DAG integrity unit tests
+│   ├── Dockerfile                  # Custom Airflow container image definition
+│   └── requirements.txt            # Python dependencies (Airflow providers, yfinance)
 │
-├── financial-analytics/      # dbt project root
+├── financial_analytics/            # dbt project root
 │   ├── models/
-│   │   ├── silver/           # Silver models (cleaned and standardized data)
-│   │   └── gold/             # Gold models (business-ready aggregations and marts)
-│   ├── seeds/                # Static reference data (e.g., stocks.csv)
-│   ├── dbt_project.yml       # dbt project configuration
-│   └── profiles.yml          # Database connection profiles
+│   │   ├── silver/                 # Silver models (cleaned and standardized data)
+│   │   └── gold/                   # Gold models (business-ready aggregations and marts)
+│   ├── seeds/                      # Static reference data (e.g., stocks.csv)
+│   ├── dbt_project.yml             # dbt project configuration
+│   └── profiles.yml                # Database connection profiles
 │
-├── .pre-commit-config.yaml   # Local git hooks configuration (Ruff & hygiene)
+├── docker-compose.yml              # Infrastructure setup (Airflow + Postgres)
+└── .pre-commit-config.yaml         # Local git hooks configuration (Ruff & hygiene)
