@@ -44,7 +44,7 @@ To maintain high code standards and catch formatting issues before code is commi
 To ensure high code quality and prevent runtime failures, the repository features an automated sequential CI/CD pipeline running on every push and pull request:
 - **CI Job (Validation):** 
   - **Ruff:** Code style, formatting, and linter checks.
-  - **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` (isolating custom DAGs with `include_examples=False`) after running `airflow db migrate`.
+  - **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` after running `airflow db migrate`.
   - **dbt Parse:** Compilation and dependency checks across all dbt models and schemas.
 - **CD Job (Deployment):** Triggered only on the `main` branch upon successful completion of the CI job, handling container build via Docker Buildx and secure push to GHCR.
 
