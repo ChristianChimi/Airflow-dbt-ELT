@@ -11,8 +11,7 @@ class RobustForecastModel:
         self.futr_exog = ["sp500", "vix", "volume", "vol_ma"]
         quantiles_tensor = torch.tensor([0.1, 0.5, 0.9])
 
-        trainer_kw = {"enable_progress_bar": False}
-
+        # Passiamo enable_progress_bar direttamente nel costruttore di NHITS
         self.model = NHITS(
             h=self.horizon,
             input_size=60,
@@ -21,7 +20,7 @@ class RobustForecastModel:
             max_steps=50,
             accelerator="cpu",
             loss=QuantileLoss(q=quantiles_tensor),
-            trainer_kwargs=trainer_kw,
+            enable_progress_bar=False,
         )
         self.nf = NeuralForecast(models=[self.model], freq="B")
 
