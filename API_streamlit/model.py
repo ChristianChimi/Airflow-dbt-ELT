@@ -1,8 +1,8 @@
 import pandas as pd
+import torch
 from neuralforecast import NeuralForecast
 from neuralforecast.losses.pytorch import QuantileLoss
 from neuralforecast.models import NHITS
-import torch
 
 
 class RobustForecastModel:
