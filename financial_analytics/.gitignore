@@ -6,3 +6,7 @@ dbt_packages/
 *.log
 .venv/
 __pycache__/
+lightning_logs/
+**/lightning_logs/
+*.yaml
+*.yml
