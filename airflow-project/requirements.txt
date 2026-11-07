@@ -1,9 +1,5 @@
 yfinance
-sqlalchemy
 pandas
 psycopg2-binary
-apache-airflow
-pytest
-ruff
 dbt-core
 dbt-postgres
