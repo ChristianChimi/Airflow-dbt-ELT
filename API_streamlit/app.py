@@ -1,6 +1,5 @@
 import plotly.graph_objects as go
 import streamlit as st
-
 from model import RobustForecastModel
 from utils import create_future_exog, get_robust_data
 
