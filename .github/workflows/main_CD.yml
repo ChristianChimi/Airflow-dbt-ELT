@@ -46,11 +46,11 @@ jobs:
             type=sha
             type=raw,value=latest
 
-      # 5. Build and push image to GHCR
+      # 5. Build and push image to GHCR (usando airflow-project come contesto)
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./airflow-project
           file: ./airflow-project/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
