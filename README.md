@@ -10,9 +10,7 @@ An end-to-end automated ELT (Extract, Load, Transform) data pipeline designed to
 - **Ingestion:** Python (using `yfinance` to fetch live historical stock data) with incremental append logic.
 - **Transformation & Modeling:** dbt-postgres (Staging, Silver, and Gold incremental model builds).
 - **Code Quality & Git Hygiene:** `pre-commit` hooks running **Ruff** (linting and formatting) and file hygiene checks locally before every commit.
-- **CI/CD Automation:** GitHub Actions:
-  - **CI:** Automated Ruff linting, Pytest DAG integrity checks (`DagBag` with `include_examples=False`), and dbt parsing.
-  - **CD:** Automated Docker image builds via Docker Buildx and publishing to **GitHub Container Registry (GHCR)**.
+- **CI/CD Automation:** GitHub Actions (Unified sequential workflow featuring automated linting, unit testing, dbt parsing, and automated Docker image builds published to **GitHub Container Registry (GHCR)**).
 - **Database:** PostgreSQL.
 - **Environment:** Docker & Docker Compose.
 
@@ -36,10 +34,12 @@ To maintain high code standards and catch formatting issues before code is even 
 
 ## CI/CD Quality Controls (GitHub Actions)
 
-To ensure high code quality and prevent runtime failures, the repository features an automated CI/CD pipeline running on every push and pull request, executing:
-- **Ruff:** Code style, formatting, and linter checks.
-- **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` (isolating custom DAGs with `include_examples=False`) after running `airflow db migrate`.
-- **dbt Parse:** Compilation and dependency checks across all dbt models and schemas.
+To ensure high code quality and prevent runtime failures, the repository features an automated sequential CI/CD pipeline running on every push and pull request:
+- **CI Job (Validation):** 
+  - **Ruff:** Code style, formatting, and linter checks.
+  - **Pytest:** Automated DAG integrity tests using Airflow's `DagBag` (isolating custom DAGs with `include_examples=False`) after running `airflow db migrate`.
+  - **dbt Parse:** Compilation and dependency checks across all dbt models and schemas.
+- **CD Job (Deployment):** Triggered only on the `main` branch upon successful completion of the CI job, handling container build via Docker Buildx (with `./airflow-project` context) and secure push to GHCR.
 
 ## 📂 Project Structure
 
@@ -48,8 +48,7 @@ Airflow-dbt-ELT/
 │
 ├── .github/
 │   └── workflows/
-│       ├── data_platform_ci.yml    # CI pipeline (Lint, Pytest, dbt parse)
-│       └── data_platform_cd.yml    # CD pipeline (Docker Build & Push to GHCR)
+│       └── CI_CD_main.yml          # Unified CI/CD pipeline (Lint, Test, Parse, Build & Push)
 │
 ├── airflow-project/                # Airflow configuration and DAGs
 │   ├── dags/
